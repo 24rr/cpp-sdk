@@ -77,7 +77,7 @@ namespace topgg {
     result(const dpp::http_request_completion_t& response, const std::function<T(const dpp::json&)>& parse_fn)
       : internal_result(response), m_parse_fn(parse_fn) {}
 
-    T get() const {
+    inline T get() const {
       prepare();
       return m_parse_fn(dpp::json::parse(m_response.body));
     }
@@ -100,15 +100,15 @@ namespace topgg {
     async_result& operator=(const async_result&) = delete;
     async_result& operator=(async_result&&) noexcept = default;
 
-    T& operator co_await() & {
+    inline T& operator co_await() & {
       return m_fut.operator co_await().get();
     }
     
-    const T& operator co_await() const & {
+    inline const T& operator co_await() const & {
       return m_fut.operator co_await().get();
     }
     
-    T&& operator co_await() && {
+    inline T&& operator co_await() && {
       return std::forward<dpp::async<result<T>>>(m_fut).operator co_await().get();
     }
     
