@@ -13,6 +13,8 @@ project(
 )
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+set(DPP_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/deps/dpp")
+list(APPEND CMAKE_PREFIX_PATH "${DPP_ROOT}")
 
 find_package(DPP REQUIRED)
 include(FetchContent)
@@ -55,7 +57,7 @@ target_link_libraries(topgg_tests PRIVATE
   topgg
   GTest::gtest_main
   GTest::gmock
-  dpp
+  DPP::DPP
 )
 
 target_include_directories(topgg_tests PRIVATE
@@ -64,8 +66,14 @@ target_include_directories(topgg_tests PRIVATE
 
 add_test(NAME topgg_tests COMMAND topgg_tests)
 
+add_custom_command(TARGET topgg_tests POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    "${DPP_ROOT}/lib/dpp.dll"
+    $<TARGET_FILE_DIR:topgg_tests>
+)
+
 set_tests_properties(topgg_tests PROPERTIES
-    ENVIRONMENT "PATH=${DPP_LIBRARY_DIR};$ENV{PATH}"
+    ENVIRONMENT "PATH=${DPP_ROOT}/lib;${CMAKE_CURRENT_BINARY_DIR}/Release;$ENV{PATH}"
 )
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)

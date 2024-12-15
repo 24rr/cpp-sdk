@@ -1,35 +1,33 @@
 # FindDPP.cmake
 
+message(STATUS "DPP_ROOT is set to: ${DPP_ROOT}")
+
 # Find DPP library
 find_library(DPP_LIBRARY
-    NAMES dpp libdpp
-    PATHS
-        "${CMAKE_SOURCE_DIR}/deps"
-        "${CMAKE_SOURCE_DIR}/deps/lib"
+    NAMES dpp dpp.lib libdpp
+    PATHS 
+        "${DPP_ROOT}/lib"
+        "${DPP_ROOT}/lib/Release"
+        "${DPP_ROOT}/lib/Debug"
     NO_DEFAULT_PATH
 )
+
+message(STATUS "DPP_LIBRARY found at: ${DPP_LIBRARY}")
 
 # Find DPP headers
 find_path(DPP_INCLUDE_DIR
-    NAMES "dpp/dpp.h"
-    PATHS
-        "${CMAKE_SOURCE_DIR}/deps"
-        "${CMAKE_SOURCE_DIR}/deps/include"
-    PATH_SUFFIXES
-        include
-        dpp
+    NAMES dpp/dpp.h
+    PATHS "${DPP_ROOT}/include"
     NO_DEFAULT_PATH
 )
 
-message(STATUS "Looking for DPP in: ${CMAKE_SOURCE_DIR}/deps")
-message(STATUS "DPP Library: ${DPP_LIBRARY}")
-message(STATUS "DPP Include: ${DPP_INCLUDE_DIR}")
+message(STATUS "DPP_INCLUDE_DIR found at: ${DPP_INCLUDE_DIR}")
+
+get_filename_component(DPP_LIBRARY_DIR ${DPP_LIBRARY} DIRECTORY)
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(DPP
-    REQUIRED_VARS
-        DPP_LIBRARY
-        DPP_INCLUDE_DIR
+    REQUIRED_VARS DPP_LIBRARY DPP_INCLUDE_DIR
 )
 
 if(DPP_FOUND AND NOT TARGET DPP::DPP)
@@ -40,7 +38,4 @@ if(DPP_FOUND AND NOT TARGET DPP::DPP)
     )
 endif()
 
-set(DPP_LIBRARIES ${DPP_LIBRARY})
-set(DPP_INCLUDE_DIRS ${DPP_INCLUDE_DIR})
-
-mark_as_advanced(DPP_LIBRARY DPP_INCLUDE_DIR)
+mark_as_advanced(DPP_INCLUDE_DIR DPP_LIBRARY)
