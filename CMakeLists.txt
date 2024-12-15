@@ -55,6 +55,7 @@ target_link_libraries(topgg_tests PRIVATE
   topgg
   GTest::gtest_main
   GTest::gmock
+  dpp
 )
 
 target_include_directories(topgg_tests PRIVATE
@@ -62,5 +63,9 @@ target_include_directories(topgg_tests PRIVATE
 )
 
 add_test(NAME topgg_tests COMMAND topgg_tests)
+
+set_tests_properties(topgg_tests PROPERTIES
+    ENVIRONMENT "PATH=${DPP_LIBRARY_DIR};$ENV{PATH}"
+)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
